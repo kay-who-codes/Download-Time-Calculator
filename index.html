@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⏱️ Download Time Calculator</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #bb86fc;
+            --secondary-color: #03dac6;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: var(--accent-color);
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background-color: #2d2d2d;
+            color: var(--text-color);
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: var(--accent-color);
+            color: #121212;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #a370f0;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #252525;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            display: none;
+        }
+        
+        .highlight {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .unit-info {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Download Time Calculator</h1>
+        
+        <div class="form-group">
+            <label for="fileSize">File Size</label>
+            <input type="number" id="fileSize" placeholder="Enter file size">
+            <select id="sizeUnit">
+                <option value="bytes">Bytes</option>
+                <option value="kb">Kilobytes (KB)</option>
+                <option value="mb" selected>Megabytes (MB)</option>
+                <option value="gb">Gigabytes (GB)</option>
+                <option value="tb">Terabytes (TB)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="downloadSpeed">Download Speed</label>
+            <input type="number" id="downloadSpeed" placeholder="Enter download speed">
+            <select id="speedUnit">
+                <option value="bps">Bits per second (bps)</option>
+                <option value="kbps">Kilobits per second (Kbps)</option>
+                <option value="mbps" selected>Megabits per second (Mbps)</option>
+                <option value="gbps">Gigabits per second (Gbps)</option>
+            </select>
+            <p class="unit-info">Note: 1 byte = 8 bits. ISPs typically advertise speeds in Mbps.</p>
+        </div>
+        
+        <button onclick="calculateDownloadTime()">Calculate Download Time</button>
+        
+        <div id="result" class="result">
+            Your download of <span id="fileSizeDisplay" class="highlight"></span> 
+            at <span id="speedDisplay" class="highlight"></span> 
+            will take approximately <span id="timeResult" class="highlight"></span>.
+        </div>
+    </div>
+
+    <script>
+        function calculateDownloadTime() {
+            // Get input values
+            const fileSize = parseFloat(document.getElementById('fileSize').value);
+            const sizeUnit = document.getElementById('sizeUnit').value;
+            const downloadSpeed = parseFloat(document.getElementById('downloadSpeed').value);
+            const speedUnit = document.getElementById('speedUnit').value;
+            
+            if (isNaN(fileSize) || isNaN(downloadSpeed) || fileSize <= 0 || downloadSpeed <= 0) {
+                alert('Please enter valid positive numbers for both file size and download speed.');
+                return;
+            }
+            
+            // Convert file size to bytes
+            let fileSizeInBytes;
+            switch(sizeUnit) {
+                case 'bytes':
+                    fileSizeInBytes = fileSize;
+                    break;
+                case 'kb':
+                    fileSizeInBytes = fileSize * 1024;
+                    break;
+                case 'mb':
+                    fileSizeInBytes = fileSize * 1024 * 1024;
+                    break;
+                case 'gb':
+                    fileSizeInBytes = fileSize * 1024 * 1024 * 1024;
+                    break;
+                case 'tb':
+                    fileSizeInBytes = fileSize * 1024 * 1024 * 1024 * 1024;
+                    break;
+            }
+            
+            // Convert speed to bits per second
+            let speedInBps;
+            switch(speedUnit) {
+                case 'bps':
+                    speedInBps = downloadSpeed;
+                    break;
+                case 'kbps':
+                    speedInBps = downloadSpeed * 1000;
+                    break;
+                case 'mbps':
+                    speedInBps = downloadSpeed * 1000 * 1000;
+                    break;
+                case 'gbps':
+                    speedInBps = downloadSpeed * 1000 * 1000 * 1000;
+                    break;
+            }
+            
+            // Calculate time in seconds (file size in bits / speed in bits per second)
+            const timeInSeconds = (fileSizeInBytes * 8) / speedInBps;
+            
+            // Format the result in natural language
+            const timeString = formatTime(timeInSeconds);
+            
+            // Display the result
+            document.getElementById('fileSizeDisplay').textContent = 
+                `${fileSize} ${sizeUnit.toUpperCase()}`;
+            document.getElementById('speedDisplay').textContent = 
+                `${downloadSpeed} ${speedUnit.toUpperCase()}`;
+            document.getElementById('timeResult').textContent = timeString;
+            document.getElementById('result').style.display = 'block';
+        }
+        
+        function formatTime(seconds) {
+            if (seconds < 1) {
+                return "less than a second";
+            }
+            
+            const minutes = seconds / 60;
+            const hours = minutes / 60;
+            const days = hours / 24;
+            const weeks = days / 7;
+            const months = days / 30;
+            const years = days / 365;
+            
+            if (years >= 1) {
+                const roundedYears = Math.round(years * 10) / 10;
+                return roundedYears === 1 ? "1 year" : `${roundedYears} years`;
+            } else if (months >= 1) {
+                const roundedMonths = Math.round(months * 10) / 10;
+                return roundedMonths === 1 ? "1 month" : `${roundedMonths} months`;
+            } else if (weeks >= 1) {
+                const roundedWeeks = Math.round(weeks * 10) / 10;
+                return roundedWeeks === 1 ? "1 week" : `${roundedWeeks} weeks`;
+            } else if (days >= 1) {
+                const roundedDays = Math.round(days * 10) / 10;
+                return roundedDays === 1 ? "1 day" : `${roundedDays} days`;
+            } else if (hours >= 1) {
+                const roundedHours = Math.round(hours * 10) / 10;
+                return roundedHours === 1 ? "1 hour" : `${roundedHours} hours`;
+            } else if (minutes >= 1) {
+                const roundedMinutes = Math.round(minutes * 10) / 10;
+                return roundedMinutes === 1 ? "1 minute" : `${roundedMinutes} minutes`;
+            } else {
+                const roundedSeconds = Math.round(seconds * 10) / 10;
+                return roundedSeconds === 1 ? "1 second" : `${roundedSeconds} seconds`;
+            }
+        }
+    </script>
+</body>
+</html>
