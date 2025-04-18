@@ -9,8 +9,9 @@
             --bg-color: #121212;
             --card-color: #1e1e1e;
             --text-color: #e0e0e0;
-            --accent-color: #bb86fc;
+            --accent-color: #30acff;
             --secondary-color: #03dac6;
+            --error-color: #cf6679;
         }
         
         body {
@@ -23,68 +24,113 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            line-height: 1.6;
         }
         
         .container {
             background-color: var(--card-color);
-            border-radius: 12px;
-            padding: 30px;
+            border-radius: 16px;
+            padding: 40px;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            max-width: 550px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
         }
         
         h1 {
             color: var(--accent-color);
-            margin-top: 0;
+            margin: 0 0 25px 0;
             text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 500;
+            color: var(--accent-color);
+            font-size: 0.95rem;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-group input {
+            flex: 2;
+        }
+        
+        .input-group select {
+            flex: 1;
         }
         
         input, select {
-            width: 100%;
-            padding: 12px;
+            padding: 14px 16px;
             border: 1px solid #333;
-            border-radius: 6px;
+            border-radius: 8px;
             background-color: #2d2d2d;
             color: var(--text-color);
             font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
         }
         
         button {
             background-color: var(--accent-color);
             color: #121212;
             border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
+            padding: 16px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1rem;
             font-weight: 600;
             width: 100%;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
         }
         
         button:hover {
-            background-color: #a370f0;
+            background-color: #48a7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(134, 205, 252, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
         }
         
         .result {
             margin-top: 30px;
-            padding: 20px;
+            padding: 25px;
             background-color: #252525;
-            border-radius: 8px;
+            border-radius: 10px;
             text-align: center;
-            font-size: 18px;
+            font-size: 1.1rem;
             display: none;
+            animation: fadeIn 0.5s ease-out;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .highlight {
@@ -93,38 +139,70 @@
         }
         
         .unit-info {
-            font-size: 14px;
+            font-size: 0.85rem;
             color: #aaa;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.9rem;
             margin-top: 5px;
+            display: none;
+        }
+        
+        .logo {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="logo">⏱️</div>
         <h1>Download Time Calculator</h1>
         
         <div class="form-group">
             <label for="fileSize">File Size</label>
-            <input type="number" id="fileSize" placeholder="Enter file size">
-            <select id="sizeUnit">
-                <option value="bytes">Bytes</option>
-                <option value="kb">Kilobytes (KB)</option>
-                <option value="mb" selected>Megabytes (MB)</option>
-                <option value="gb">Gigabytes (GB)</option>
-                <option value="tb">Terabytes (TB)</option>
-            </select>
+            <div class="input-group">
+                <input type="number" id="fileSize" placeholder="e.g. 500" step="any">
+                <select id="sizeUnit">
+                    <option value="bytes">Bytes</option>
+                    <option value="kb">Kilobytes (KB)</option>
+                    <option value="mb" selected>Megabytes (MB)</option>
+                    <option value="gb">Gigabytes (GB)</option>
+                    <option value="tb">Terabytes (TB)</option>
+                </select>
+            </div>
+            <div id="fileSizeError" class="error-message">Please enter a valid file size</div>
         </div>
         
         <div class="form-group">
             <label for="downloadSpeed">Download Speed</label>
-            <input type="number" id="downloadSpeed" placeholder="Enter download speed">
-            <select id="speedUnit">
-                <option value="bps">Bits per second (bps)</option>
-                <option value="kbps">Kilobits per second (Kbps)</option>
-                <option value="mbps" selected>Megabits per second (Mbps)</option>
-                <option value="gbps">Gigabits per second (Gbps)</option>
-            </select>
+            <div class="input-group">
+                <input type="number" id="downloadSpeed" placeholder="e.g. 50" step="any">
+                <select id="speedUnit">
+                    <option value="bps">Bits per second (bps)</option>
+                    <option value="kbps">Kilobits per second (Kbps)</option>
+                    <option value="mbps" selected>Megabits per second (Mbps)</option>
+                    <option value="gbps">Gigabits per second (Gbps)</option>
+                    <option value="Bps">Bytes per second (B/s)</option>
+                    <option value="KBps">Kilobytes per second (KB/s)</option>
+                    <option value="MBps">Megabytes per second (MB/s)</option>
+                    <option value="GBps">Gigabytes per second (GB/s)</option>
+                </select>
+            </div>
             <p class="unit-info">Note: 1 byte = 8 bits. ISPs typically advertise speeds in Mbps.</p>
+            <div id="speedError" class="error-message">Please enter a valid download speed</div>
         </div>
         
         <button onclick="calculateDownloadTime()">Calculate Download Time</button>
@@ -134,20 +212,44 @@
             at <span id="speedDisplay" class="highlight"></span> 
             will take approximately <span id="timeResult" class="highlight"></span>.
         </div>
+        
+        <footer>
+            Made with ❤️ for fast downloads
+        </footer>
     </div>
 
     <script>
         function calculateDownloadTime() {
             // Get input values
-            const fileSize = parseFloat(document.getElementById('fileSize').value);
+            const fileSizeInput = document.getElementById('fileSize');
+            const fileSize = parseFloat(fileSizeInput.value);
             const sizeUnit = document.getElementById('sizeUnit').value;
-            const downloadSpeed = parseFloat(document.getElementById('downloadSpeed').value);
+            const downloadSpeedInput = document.getElementById('downloadSpeed');
+            const downloadSpeed = parseFloat(downloadSpeedInput.value);
             const speedUnit = document.getElementById('speedUnit').value;
             
-            if (isNaN(fileSize) || isNaN(downloadSpeed) || fileSize <= 0 || downloadSpeed <= 0) {
-                alert('Please enter valid positive numbers for both file size and download speed.');
-                return;
+            // Reset error messages
+            document.getElementById('fileSizeError').style.display = 'none';
+            document.getElementById('speedError').style.display = 'none';
+            fileSizeInput.style.borderColor = '#333';
+            downloadSpeedInput.style.borderColor = '#333';
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (isNaN(fileSize) || fileSize <= 0) {
+                document.getElementById('fileSizeError').style.display = 'block';
+                fileSizeInput.style.borderColor = 'var(--error-color)';
+                isValid = false;
             }
+            
+            if (isNaN(downloadSpeed) || downloadSpeed <= 0) {
+                document.getElementById('speedError').style.display = 'block';
+                downloadSpeedInput.style.borderColor = 'var(--error-color)';
+                isValid = false;
+            }
+            
+            if (!isValid) return;
             
             // Convert file size to bytes
             let fileSizeInBytes;
@@ -183,6 +285,18 @@
                     break;
                 case 'gbps':
                     speedInBps = downloadSpeed * 1000 * 1000 * 1000;
+                    break;
+                case 'Bps':
+                    speedInBps = downloadSpeed * 8;
+                    break;
+                case 'KBps':
+                    speedInBps = downloadSpeed * 8 * 1024;
+                    break;
+                case 'MBps':
+                    speedInBps = downloadSpeed * 8 * 1024 * 1024;
+                    break;
+                case 'GBps':
+                    speedInBps = downloadSpeed * 8 * 1024 * 1024 * 1024;
                     break;
             }
             
