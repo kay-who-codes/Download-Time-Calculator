@@ -1,355 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⏱️ Download Time Calculator</title>
-    <style>
-        :root {
-            --bg-color: #121212;
-            --card-color: #1e1e1e;
-            --text-color: #e0e0e0;
-            --accent-color: #30acff;
-            --secondary-color: #03dac6;
-            --error-color: #cf6679;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        
-        .container {
-            background-color: var(--card-color);
-            border-radius: 16px;
-            padding: 40px;
-            width: 100%;
-            max-width: 550px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease;
-        }
-        
-        .container:hover {
-            transform: translateY(-5px);
-        }
-        
-        h1 {
-            color: var(--accent-color);
-            margin: 0 0 25px 0;
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 500;
-            color: var(--accent-color);
-            font-size: 0.95rem;
-        }
-        
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .input-group input {
-            flex: 2;
-        }
-        
-        .input-group select {
-            flex: 1;
-        }
-        
-        input, select {
-            padding: 14px 16px;
-            border: 1px solid #333;
-            border-radius: 8px;
-            background-color: #2d2d2d;
-            color: var(--text-color);
-            font-size: 16px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
-        }
-        
-        button {
-            background-color: var(--accent-color);
-            color: #121212;
-            border: none;
-            padding: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            width: 100%;
-            transition: all 0.3s;
-            margin-top: 10px;
-            letter-spacing: 0.5px;
-        }
-        
-        button:hover {
-            background-color: #48a7ff;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(134, 205, 252, 0.3);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .result {
-            margin-top: 30px;
-            padding: 25px;
-            background-color: #252525;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 1.1rem;
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-            border-left: 4px solid var(--accent-color);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .highlight {
-            color: var(--secondary-color);
-            font-weight: 600;
-        }
-        
-        .unit-info {
-            font-size: 0.85rem;
-            color: #aaa;
-            margin-top: 8px;
-            font-style: italic;
-        }
-        
-        .error-message {
-            color: var(--error-color);
-            font-size: 0.9rem;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        .logo {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 0.8rem;
-            color: #666;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Download Time Calculator</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#eef2f9;--bg2:#e0e8f7;--card:#ffffffcc;--field:#f3f6fc;--line:#d5dded;
+  --text:#14213d;--muted:#5d6b88;--accent:#2563eb;--accent2:#06b6d4;--accent-ink:#fff;--good:#059669;--bad:#dc2626;
+  --shadow:0 20px 50px rgba(37,99,235,.15);
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0b1020;--bg2:#141b34;--card:#161d36cc;--field:#0f1529;--line:#262f52;
+    --text:#e8ecf8;--muted:#8f9bc0;--accent:#4f8cff;--accent2:#22d3ee;--accent-ink:#06101f;--good:#34d399;--bad:#f87171;
+    --shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0b1020;--bg2:#141b34;--card:#161d36cc;--field:#0f1529;--line:#262f52;
+  --text:#e8ecf8;--muted:#8f9bc0;--accent:#4f8cff;--accent2:#22d3ee;--accent-ink:#06101f;--good:#34d399;--bad:#f87171;
+  --shadow:0 20px 60px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:32px 16px;
+  font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;color:var(--text);
+  background:radial-gradient(900px 500px at 15% -10%,var(--bg2),transparent 60%),radial-gradient(700px 500px at 100% 10%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 60%),var(--bg);
+  background-attachment:fixed;
+}
+.wrap{width:100%;max-width:560px}
+.card{
+  background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:var(--shadow);
+}
+header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.badge{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:24px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 40%,transparent)}
+h1{font-size:1.35rem;margin:0;letter-spacing:-.01em}
+header p{margin:2px 0 0;color:var(--muted);font-size:.88rem}
+.theme{margin-left:auto;background:var(--field);border:1px solid var(--line);color:var(--text);width:40px;height:40px;border-radius:12px;cursor:pointer;font-size:18px}
+.theme:hover{border-color:var(--accent)}
+.field{margin-bottom:20px}
+.row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+label{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.hint{font-size:.78rem;color:var(--muted)}
+.inputs{display:flex;gap:10px}
+input,select{
+  font:inherit;color:var(--text);background:var(--field);border:1.5px solid var(--line);border-radius:14px;
+  padding:14px 16px;font-size:1.05rem;min-width:0;transition:border-color .15s,box-shadow .15s;
+}
+input{flex:1.3;font-weight:600;font-variant-numeric:tabular-nums}
+select{flex:1;cursor:pointer}
+input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+input.invalid{border-color:var(--bad)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{font:inherit;font-size:.8rem;font-weight:600;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+.chip:hover{color:var(--text);border-color:var(--accent)}
+.chip.on{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent);border-color:var(--accent)}
+.opts{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:4px 0 22px;padding:12px 14px;border-radius:14px;background:var(--field);border:1px solid var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{font:inherit;font-size:.8rem;font-weight:600;padding:6px 12px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.opts span{font-size:.82rem;color:var(--muted)}
+.result{
+  position:relative;overflow:hidden;border-radius:20px;padding:26px 22px;text-align:center;color:#fff;
+  background:linear-gradient(135deg,#2563eb,#06b6d4);box-shadow:0 14px 34px rgba(37,99,235,.35);
+}
+.result::after{content:"";position:absolute;inset:0;background:radial-gradient(400px 160px at 80% -20%,rgba(255,255,255,.28),transparent 70%);pointer-events:none}
+.result small{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;opacity:.85}
+.big{font-size:clamp(2rem,9vw,3rem);font-weight:800;letter-spacing:-.02em;margin:6px 0 2px;line-height:1.1}
+.exact{font-size:.95rem;opacity:.92;font-variant-numeric:tabular-nums}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.stat{background:var(--field);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:.98rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:26px 0 10px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+td{padding:10px 14px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+td:last-child{text-align:right;font-weight:600}
+tr.me td{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.copy{margin-top:14px;width:100%;font:inherit;font-weight:700;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:transparent;color:var(--text);cursor:pointer;transition:all .15s}
+.copy:hover{border-color:var(--accent);color:var(--accent)}
+.err{color:var(--bad);font-size:.85rem;padding:18px 0 4px;text-align:center}
+footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:18px}
+@media (max-width:420px){.card{padding:20px}.stats{grid-template-columns:1fr 1fr 1fr;gap:8px}.inputs{flex-direction:column}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">⏱️</div>
-        <h1>Download Time Calculator</h1>
-        
-        <div class="form-group">
-            <label for="fileSize">File Size</label>
-            <div class="input-group">
-                <input type="number" id="fileSize" placeholder="e.g. 500" step="any">
-                <select id="sizeUnit">
-                    <option value="bytes">Bytes</option>
-                    <option value="kb">Kilobytes (KB)</option>
-                    <option value="mb" selected>Megabytes (MB)</option>
-                    <option value="gb">Gigabytes (GB)</option>
-                    <option value="tb">Terabytes (TB)</option>
-                </select>
-            </div>
-            <div id="fileSizeError" class="error-message">Please enter a valid file size</div>
-        </div>
-        
-        <div class="form-group">
-            <label for="downloadSpeed">Download Speed</label>
-            <div class="input-group">
-                <input type="number" id="downloadSpeed" placeholder="e.g. 50" step="any">
-                <select id="speedUnit">
-                    <option value="bps">Bits per second (bps)</option>
-                    <option value="kbps">Kilobits per second (Kbps)</option>
-                    <option value="mbps" selected>Megabits per second (Mbps)</option>
-                    <option value="gbps">Gigabits per second (Gbps)</option>
-                    <option value="Bps">Bytes per second (B/s)</option>
-                    <option value="KBps">Kilobytes per second (KB/s)</option>
-                    <option value="MBps">Megabytes per second (MB/s)</option>
-                    <option value="GBps">Gigabytes per second (GB/s)</option>
-                </select>
-            </div>
-            <p class="unit-info">Note: 1 byte = 8 bits. ISPs typically advertise speeds in Mbps.</p>
-            <div id="speedError" class="error-message">Please enter a valid download speed</div>
-        </div>
-        
-        <button onclick="calculateDownloadTime()">Calculate Download Time</button>
-        
-        <div id="result" class="result">
-            Your download of <span id="fileSizeDisplay" class="highlight"></span> 
-            at <span id="speedDisplay" class="highlight"></span> 
-            will take approximately <span id="timeResult" class="highlight"></span>.
-        </div>
-        
-        <footer>
-            Made with ❤️ for fast downloads
-        </footer>
+<div class="wrap">
+  <div class="card">
+    <header>
+      <div class="badge">⏱️</div>
+      <div><h1>Download Time Calculator</h1><p>Instant estimates as you type</p></div>
+      <button class="theme" id="theme" title="Toggle theme" aria-label="Toggle theme">🌓</button>
+    </header>
+
+    <div class="field">
+      <div class="row"><label for="size">File size</label></div>
+      <div class="inputs">
+        <input id="size" type="number" inputmode="decimal" min="0" step="any" value="1" placeholder="e.g. 500">
+        <select id="sizeUnit">
+          <option value="B">Bytes</option><option value="KB">Kilobytes (KB)</option>
+          <option value="MB">Megabytes (MB)</option><option value="GB" selected>Gigabytes (GB)</option>
+          <option value="TB">Terabytes (TB)</option>
+        </select>
+      </div>
+      <div class="chips" id="sizeChips"></div>
     </div>
 
-    <script>
-        function calculateDownloadTime() {
-            // Get input values
-            const fileSizeInput = document.getElementById('fileSize');
-            const fileSize = parseFloat(fileSizeInput.value);
-            const sizeUnit = document.getElementById('sizeUnit').value;
-            const downloadSpeedInput = document.getElementById('downloadSpeed');
-            const downloadSpeed = parseFloat(downloadSpeedInput.value);
-            const speedUnit = document.getElementById('speedUnit').value;
-            
-            // Reset error messages
-            document.getElementById('fileSizeError').style.display = 'none';
-            document.getElementById('speedError').style.display = 'none';
-            fileSizeInput.style.borderColor = '#333';
-            downloadSpeedInput.style.borderColor = '#333';
-            
-            // Validate inputs
-            let isValid = true;
-            
-            if (isNaN(fileSize) || fileSize <= 0) {
-                document.getElementById('fileSizeError').style.display = 'block';
-                fileSizeInput.style.borderColor = 'var(--error-color)';
-                isValid = false;
-            }
-            
-            if (isNaN(downloadSpeed) || downloadSpeed <= 0) {
-                document.getElementById('speedError').style.display = 'block';
-                downloadSpeedInput.style.borderColor = 'var(--error-color)';
-                isValid = false;
-            }
-            
-            if (!isValid) return;
-            
-            // Convert file size to bytes
-            let fileSizeInBytes;
-            switch(sizeUnit) {
-                case 'bytes':
-                    fileSizeInBytes = fileSize;
-                    break;
-                case 'kb':
-                    fileSizeInBytes = fileSize * 1024;
-                    break;
-                case 'mb':
-                    fileSizeInBytes = fileSize * 1024 * 1024;
-                    break;
-                case 'gb':
-                    fileSizeInBytes = fileSize * 1024 * 1024 * 1024;
-                    break;
-                case 'tb':
-                    fileSizeInBytes = fileSize * 1024 * 1024 * 1024 * 1024;
-                    break;
-            }
-            
-            // Convert speed to bits per second
-            let speedInBps;
-            switch(speedUnit) {
-                case 'bps':
-                    speedInBps = downloadSpeed;
-                    break;
-                case 'kbps':
-                    speedInBps = downloadSpeed * 1000;
-                    break;
-                case 'mbps':
-                    speedInBps = downloadSpeed * 1000 * 1000;
-                    break;
-                case 'gbps':
-                    speedInBps = downloadSpeed * 1000 * 1000 * 1000;
-                    break;
-                case 'Bps':
-                    speedInBps = downloadSpeed * 8;
-                    break;
-                case 'KBps':
-                    speedInBps = downloadSpeed * 8 * 1024;
-                    break;
-                case 'MBps':
-                    speedInBps = downloadSpeed * 8 * 1024 * 1024;
-                    break;
-                case 'GBps':
-                    speedInBps = downloadSpeed * 8 * 1024 * 1024 * 1024;
-                    break;
-            }
-            
-            // Calculate time in seconds (file size in bits / speed in bits per second)
-            const timeInSeconds = (fileSizeInBytes * 8) / speedInBps;
-            
-            // Format the result in natural language
-            const timeString = formatTime(timeInSeconds);
-            
-            // Display the result
-            document.getElementById('fileSizeDisplay').textContent = 
-                `${fileSize} ${sizeUnit.toUpperCase()}`;
-            document.getElementById('speedDisplay').textContent = 
-                `${downloadSpeed} ${speedUnit.toUpperCase()}`;
-            document.getElementById('timeResult').textContent = timeString;
-            document.getElementById('result').style.display = 'block';
-        }
-        
-        function formatTime(seconds) {
-            if (seconds < 1) {
-                return "less than a second";
-            }
-            
-            const minutes = seconds / 60;
-            const hours = minutes / 60;
-            const days = hours / 24;
-            const weeks = days / 7;
-            const months = days / 30;
-            const years = days / 365;
-            
-            if (years >= 1) {
-                const roundedYears = Math.round(years * 10) / 10;
-                return roundedYears === 1 ? "1 year" : `${roundedYears} years`;
-            } else if (months >= 1) {
-                const roundedMonths = Math.round(months * 10) / 10;
-                return roundedMonths === 1 ? "1 month" : `${roundedMonths} months`;
-            } else if (weeks >= 1) {
-                const roundedWeeks = Math.round(weeks * 10) / 10;
-                return roundedWeeks === 1 ? "1 week" : `${roundedWeeks} weeks`;
-            } else if (days >= 1) {
-                const roundedDays = Math.round(days * 10) / 10;
-                return roundedDays === 1 ? "1 day" : `${roundedDays} days`;
-            } else if (hours >= 1) {
-                const roundedHours = Math.round(hours * 10) / 10;
-                return roundedHours === 1 ? "1 hour" : `${roundedHours} hours`;
-            } else if (minutes >= 1) {
-                const roundedMinutes = Math.round(minutes * 10) / 10;
-                return roundedMinutes === 1 ? "1 minute" : `${roundedMinutes} minutes`;
-            } else {
-                const roundedSeconds = Math.round(seconds * 10) / 10;
-                return roundedSeconds === 1 ? "1 second" : `${roundedSeconds} seconds`;
-            }
-        }
-    </script>
+    <div class="field">
+      <div class="row"><label for="speed">Download speed</label><span class="hint" id="speedHint"></span></div>
+      <div class="inputs">
+        <input id="speed" type="number" inputmode="decimal" min="0" step="any" value="2.25" placeholder="e.g. 50">
+        <select id="speedUnit">
+          <option value="bps">Bits/s (bps)</option><option value="Kbps">Kilobits/s (Kbps)</option>
+          <option value="Mbps">Megabits/s (Mbps)</option><option value="Gbps">Gigabits/s (Gbps)</option>
+          <option value="B/s">Bytes/s (B/s)</option><option value="KB/s">Kilobytes/s (KB/s)</option>
+          <option value="MB/s" selected>Megabytes/s (MB/s)</option><option value="GB/s">Gigabytes/s (GB/s)</option>
+        </select>
+      </div>
+      <div class="chips" id="speedChips"></div>
+    </div>
+
+    <div class="opts">
+      <span>Byte units</span>
+      <div class="seg" id="base">
+        <button data-b="1000" class="on">1000 (decimal)</button>
+        <button data-b="1024">1024 (binary)</button>
+      </div>
+    </div>
+
+    <div class="result" id="result" aria-live="polite">
+      <small>Estimated time</small>
+      <div class="big" id="big">—</div>
+      <div class="exact" id="exact"></div>
+    </div>
+    <div class="err" id="err" hidden>Enter a file size and speed above zero.</div>
+
+    <div class="stats">
+      <div class="stat"><b id="eta">—</b><span>Finishes</span></div>
+      <div class="stat"><b id="mbps">—</b><span>Speed (Mbps)</span></div>
+      <div class="stat"><b id="mbs">—</b><span>Speed (MB/s)</span></div>
+    </div>
+
+    <button class="copy" id="copy">Copy result</button>
+
+    <h2>Same file, other connections</h2>
+    <div class="tablewrap"><table id="table"></table></div>
+  </div>
+  <footer>Tip: ISPs advertise in megabits (Mbps); browsers usually show megabytes (MB/s). 8 bits = 1 byte.</footer>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let base=1000;
+const sizeMul=u=>({B:1,KB:base,MB:base**2,GB:base**3,TB:base**4})[u];
+const speedBps=(v,u)=>{
+  const m={bps:1,Kbps:1e3,Mbps:1e6,Gbps:1e9,'B/s':8,'KB/s':8*base,'MB/s':8*base**2,'GB/s':8*base**3};
+  return v*m[u];
+};
+const sizePresets=[["100 MB",100,"MB"],["700 MB",700,"MB"],["4.7 GB",4.7,"GB"],["50 GB",50,"GB"],["1 TB",1,"TB"]];
+const speedPresets=[["2.25 MB/s",2.25,"MB/s"],["50 Mbps",50,"Mbps"],["100 Mbps",100,"Mbps"],["500 Mbps",500,"Mbps"],["1 Gbps",1,"Gbps"]];
+
+function chips(el,list,valId,unitId){
+  list.forEach(([label,v,u])=>{
+    const b=document.createElement('button');b.className='chip';b.textContent=label;b.dataset.v=v;b.dataset.u=u;
+    b.onclick=()=>{$(valId).value=v;$(unitId).value=u;calc()};
+    $(el).appendChild(b);
+  });
+}
+chips('sizeChips',sizePresets,'size','sizeUnit');
+chips('speedChips',speedPresets,'speed','speedUnit');
+
+function parts(s){
+  s=Math.round(s);
+  const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),sec=s%60;
+  return [[d,'d'],[h,'h'],[m,'m'],[sec,'s']];
+}
+function exactStr(s){
+  if(s<1)return 'under a second';
+  const p=parts(s).filter(x=>x[0]>0).slice(0,3);
+  return p.map(x=>x[0]+x[1]).join(' ')||'0s';
+}
+function human(s){
+  if(s<1)return 'Under 1 second';
+  const u=[[31557600,'year'],[2629800,'month'],[604800,'week'],[86400,'day'],[3600,'hour'],[60,'minute'],[1,'second']];
+  for(const [n,name] of u){
+    if(s>=n){
+      const v=s/n,r=v>=100?Math.round(v):Math.round(v*10)/10;
+      return r+' '+name+(r===1?'':'s');
+    }
+  }
+}
+function short(s){
+  if(s<1)return '<1s';
+  return exactStr(s);
+}
+function fmtNum(n){return n>=100?Math.round(n).toLocaleString():(Math.round(n*100)/100).toLocaleString()}
+
+let lastText='';
+function calc(){
+  const size=parseFloat($('size').value),speed=parseFloat($('speed').value);
+  const okS=size>0,okP=speed>0;
+  $('size').classList.toggle('invalid',!okS&&$('size').value!=='');
+  $('speed').classList.toggle('invalid',!okP&&$('speed').value!=='');
+  const bad=!(okS&&okP);
+  $('err').hidden=!bad;$('result').style.opacity=bad?.45:1;
+  document.querySelectorAll('#sizeChips .chip').forEach(c=>c.classList.toggle('on',+c.dataset.v===size&&c.dataset.u===$('sizeUnit').value));
+  document.querySelectorAll('#speedChips .chip').forEach(c=>c.classList.toggle('on',+c.dataset.v===speed&&c.dataset.u===$('speedUnit').value));
+  if(bad){$('big').textContent='—';$('exact').textContent='';$('eta').textContent=$('mbps').textContent=$('mbs').textContent='—';$('table').innerHTML='';return}
+
+  const bits=size*sizeMul($('sizeUnit').value)*8;
+  const bps=speedBps(speed,$('speedUnit').value);
+  const secs=bits/bps;
+  $('big').textContent=human(secs);
+  $('exact').textContent=secs>=60?exactStr(secs):'';
+  const fin=new Date(Date.now()+secs*1000);
+  const sameDay=fin.toDateString()===new Date().toDateString();
+  $('eta').textContent=secs>3.15e8?'Someday':(sameDay?fin.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):fin.toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'}));
+  $('mbps').textContent=fmtNum(bps/1e6);
+  $('mbs').textContent=fmtNum(bps/8/base**2);
+  $('speedHint').textContent='≈ '+fmtNum(bps/1e6)+' Mbps';
+
+  const rows=[["Your speed",bps],["10 Mbps",1e7],["50 Mbps",5e7],["100 Mbps",1e8],["500 Mbps",5e8],["1 Gbps",1e9]];
+  $('table').innerHTML=rows.map((r,i)=>`<tr class="${i?'':'me'}"><td>${r[0]}</td><td>${short(bits/r[1])}</td></tr>`).join('');
+  lastText=`${size} ${$('sizeUnit').value} at ${speed} ${$('speedUnit').value} takes about ${human(secs)}${secs>=60?' ('+exactStr(secs)+')':''}.`;
+}
+
+$('copy').onclick=async()=>{
+  try{await navigator.clipboard.writeText(lastText)}catch(e){
+    const t=document.createElement('textarea');t.value=lastText;document.body.appendChild(t);t.select();
+    try{document.execCommand('copy')}catch(_){ }t.remove();
+  }
+  $('copy').textContent='Copied ✓';setTimeout(()=>$('copy').textContent='Copy result',1400);
+};
+$('base').onclick=e=>{
+  const b=e.target.closest('button');if(!b)return;
+  base=+b.dataset.b;
+  document.querySelectorAll('#base button').forEach(x=>x.classList.toggle('on',x===b));
+  calc();
+};
+$('theme').onclick=()=>{
+  const r=document.documentElement;
+  const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme=dark?'light':'dark';
+};
+['size','speed','sizeUnit','speedUnit'].forEach(id=>$(id).addEventListener('input',calc));
+calc();
+</script>
 </body>
 </html>
